@@ -34,7 +34,7 @@ var guiders = (function($){
       },
       title: "Sample title goes here",
       width: 400,
-      xButton: false // this places a closer "x" button in the top right of the guider
+      closer: null // content for guider_close area. A value of "x" places a closer button in the top right of the guider
     },
 
     _htmlSkeleton: [
@@ -85,13 +85,17 @@ var guiders = (function($){
       }
     },
 
-    _addXButton: function(myGuider) {
-        var xButtonContainer = myGuider.elem.find(".guider_close");
-        var xButton = $("<div></div>", {
-                        "class" : "x_button",
-                        "role" : "button" });
-        xButtonContainer.append(xButton);
-        xButton.click(function() { guiders.hideAll(); });
+    _addCloser: function(myGuider) {
+        var CloserContainer = myGuider.elem.find(".guider_close");
+        if (myGuider.closer == "x") {
+          var xButton = $("<div></div>", {
+                          "class" : "x_button",
+                          "role" : "button" });
+          CloserContainer.append( xButton );
+          xButton.click(function() { guiders.hideAll(); });
+        } else {
+          CloserContainer.append( myGuider.closer );
+        }
     },
 
     _attach: function(myGuider) {
@@ -270,8 +274,8 @@ var guiders = (function($){
 
       guiders._addButtons(myGuider);
 
-      if (myGuider.xButton) {
-          guiders._addXButton(myGuider);
+      if (myGuider.closer) {
+          guiders._addCloser(myGuider);
       }
 
       guiderElement.hide();
