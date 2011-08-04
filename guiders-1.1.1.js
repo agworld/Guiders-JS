@@ -29,8 +29,8 @@ var guiders = (function($){
       overlay: false,
       position: 0, // 1-12 follows an analog clock, 0 means centered
       offset: {
-          top: null,
-          left: null
+          top: 0,
+          left: 0
       },
       title: "Sample title goes here",
       width: 400,
@@ -106,14 +106,16 @@ var guiders = (function($){
       var myHeight = myGuider.elem.innerHeight();
       var myWidth = myGuider.elem.innerWidth();
 
-      if (myGuider.position === 0) {
+      myGuider.attachTo = $(myGuider.attachTo);
+      if (myGuider.attachTo.length == 0) myGuider.position = 0;
+
+      if (myGuider.position === 0 ) {
         myGuider.elem.css("position", "absolute");
         myGuider.elem.css("top", ($(window).height() - myHeight) / 3 + $(window).scrollTop() + "px");
         myGuider.elem.css("left", ($(window).width() - myWidth) / 2 + $(window).scrollLeft() + "px");
         return;
       }
-
-      myGuider.attachTo = $(myGuider.attachTo);
+console.log( "id=" + myGuider.id + ", myGuider.offset.top=" + myGuider.offset.top );
       var base = myGuider.attachTo.offset();
       var attachToHeight = myGuider.attachTo.innerHeight();
       var attachToWidth = myGuider.attachTo.innerWidth();
@@ -139,15 +141,12 @@ var guiders = (function($){
       };
 
       offset = offsetMap[myGuider.position];
-      top   += offset[0];
-      left  += offset[1];
-
-      if (myGuider.offset.top !== null) {
-        top += myGuider.offset.top;
-      }
+      top   += offset[0] + myGuider.offset.top;
+      left  += offset[1] + myGuider.offset.left;
       
-      if (myGuider.offset.left !== null) {
-        left += myGuider.offset.left;
+      if (top < 0 ) {
+        myGuider.offset.top += top - 6;
+        top = 6;
       }
 
       myGuider.elem.css({
@@ -212,7 +211,7 @@ var guiders = (function($){
         6: ["left", myWidth/2 - arrowOffset],
         7: ["left", arrowOffset],
         8: ["bottom", arrowOffset],
-        9: ["top", myHeight/2 - arrowOffset],
+        9: ["top", myHeight/2 - arrowOffset + myGuider.offset.top],
         10: ["top", arrowOffset],
         11: ["left", arrowOffset],
         12: ["left", myWidth/2 - arrowOffset]
@@ -261,6 +260,10 @@ var guiders = (function($){
       if (passedSettings === null || passedSettings === undefined) {
         passedSettings = {};
       }
+
+      //reset offsets
+      guiders._defaultSettings.offset.top = 0
+      guiders._defaultSettings.offset.left = 0
 
       // Extend those settings with passedSettings
       myGuider = $.extend({}, guiders._defaultSettings, passedSettings);
@@ -324,8 +327,6 @@ var guiders = (function($){
       if (myGuider.overlay) {
         guiders._showOverlay();
       }
-      
-      guiders._attach(myGuider);
       
       // You can use an onShow function to take some action before the guider is shown.
       if (myGuider.onShow) {
