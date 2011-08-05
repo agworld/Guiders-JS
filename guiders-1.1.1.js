@@ -115,7 +115,7 @@ var guiders = (function($){
         myGuider.elem.css("left", ($(window).width() - myWidth) / 2 + $(window).scrollLeft() + "px");
         return;
       }
-console.log( "id=" + myGuider.id + ", myGuider.offset.top=" + myGuider.offset.top );
+
       var base = myGuider.attachTo.offset();
       var attachToHeight = myGuider.attachTo.innerHeight();
       var attachToWidth = myGuider.attachTo.innerWidth();
@@ -204,15 +204,15 @@ console.log( "id=" + myGuider.id + ", myGuider.offset.top=" + myGuider.offset.to
       var arrowOffset = guiders._arrowSize / 2;
       var positionMap = {
         1: ["right", arrowOffset],
-        2: ["top", arrowOffset],
-        3: ["top", myHeight/2 - arrowOffset],
-        4: ["bottom", arrowOffset],
+        2: ["top", arrowOffset + myGuider.offset.top],
+        3: ["top", myHeight/2 - arrowOffset + myGuider.offset.top],
+        4: ["bottom", arrowOffset - myGuider.offset.top],
         5: ["right", arrowOffset],
         6: ["left", myWidth/2 - arrowOffset],
         7: ["left", arrowOffset],
-        8: ["bottom", arrowOffset],
+        8: ["bottom", arrowOffset - myGuider.offset.top],
         9: ["top", myHeight/2 - arrowOffset + myGuider.offset.top],
-        10: ["top", arrowOffset],
+        10: ["top", arrowOffset + myGuider.offset.top],
         11: ["left", arrowOffset],
         12: ["left", myWidth/2 - arrowOffset]
       };
